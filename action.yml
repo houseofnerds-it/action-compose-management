@@ -3,9 +3,10 @@ description: 'Action in Houseofnerds-it environment - This is the overall action
 author: "House of Nerds - Nerds aus dem Keller"
 
 inputs:
-  description: "This specifies which action should be run. Is mandatory, but defaults to 'deployment-container'."
-  required: true
-  default: "deployment-container"
+  action:
+    description: "This specifies which action should be run. Is mandatory, but defaults to 'deployment-container'."
+    required: true
+    default: "deployment-container"
 
 runs:
   using: 'composite'
