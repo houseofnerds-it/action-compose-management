@@ -1,0 +1,13 @@
+jobs:
+  gpg-handler:
+    runs-on: self-hosted
+    needs:
+      - check_changed_files
+      - check_compose_files
+    strategy:
+      matrix:
+        host: [ "${{ needs.check_changed_files.outputs.matrix_hosts }}" ]
+    steps:
+      - name: gpg-handler
+        id: gpg-handler
+        uses: 

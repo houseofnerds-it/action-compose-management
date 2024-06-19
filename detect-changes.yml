@@ -1,0 +1,8 @@
+jobs:
+  changed_files:
+    runs-on: ubuntu-latest
+    name: detect which files where changed and type of change
+    steps:
+      - name: external change detection
+        id: changed-files
+        uses: houseofnerds-it/action-compose-management-detect-changes@v0.1
