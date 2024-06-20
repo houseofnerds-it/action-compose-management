@@ -12,7 +12,7 @@ on:
 
 jobs:
   check_changed_files:
-    uses: ./.github/workflows/single_tasks/detect-changes.yml
+    uses: ./.github/workflows/single-task_detect-changes.yml
   
   check_compose_files:
     runs-on: ubuntu-latest
