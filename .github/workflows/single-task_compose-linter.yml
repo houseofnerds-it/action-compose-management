@@ -1,0 +1,21 @@
+
+on:
+  workflow_call:
+
+
+jobs:
+  compose_linter:
+    runs-on: ubuntu-latest
+    if: |
+      (needs.check_changed_files.outputs.changed_files_added != '') ||
+      (needs.check_changed_files.outputs.changed_files_modified != '') ||
+      (needs.check_changed_files.outputs.changed_files_renamed != '')
+    strategy:
+      matrix:
+        list_of_files: [ "${{ needs.check_changed_files.outputs.changed_files_all_csv }}" ]
+    steps:
+      - uses: actions/checkout@v4
+      - name: "check compose files"
+        uses: sjafferali/docker-compose-lint-action@v0.1.2
+        with:
+          compose-file: "${{ matrix.list_of_files }}"

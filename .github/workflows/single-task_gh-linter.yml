@@ -1,0 +1,17 @@
+name: gh-linter
+
+on:
+  workflow_call:
+
+
+jobs:
+  gh_linter:
+    runs-on: ubuntu-latest
+    permissions:
+      # needed for the checkout action
+      contents: read
+      # needed to annotate the files in a pull request with comments
+      pull-requests: write
+    name: check github deploy workflow
+    steps:
+      - uses: houseofnerds-it/action-github-linter@v0.1
