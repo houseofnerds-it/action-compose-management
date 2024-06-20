@@ -99,6 +99,8 @@ jobs:
         uses: sjafferali/docker-compose-lint-action@v0.1.2
         with:
           compose-file: "${{ matrix.list_of_files }}"
+      # here one wanted error to throw the ci off
+      - huhu
 
   handle_gpg:
     runs-on: self-hosted
