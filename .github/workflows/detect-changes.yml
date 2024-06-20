@@ -1,3 +1,9 @@
+name: "Reuseable Workflow - This detects changes in a repo on commits or PRs."
+
+on:
+  workflow_call:
+
+
 jobs:
   changed_files:
     runs-on: ubuntu-latest

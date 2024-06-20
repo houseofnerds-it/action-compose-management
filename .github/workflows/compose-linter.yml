@@ -1,11 +1,16 @@
+
+on:
+  workflow_call:
+
+
 jobs:
   compose_linter:
     runs-on: self-hosted
-    needs:
-      - changed_files
-    strategy:
-      matrix:
-        list_of_files: [ "${{ needs.changed_files.outputs.changed_files_all_csv }}" ]
+    #needs:
+    #  - changed_files
+    #strategy:
+      #matrix:
+        #list_of_files: [ "${{ needs.changed_files.outputs.changed_files_all_csv }}" ]
     steps:
       - name: gpg-handler
         id: gpg-handler
