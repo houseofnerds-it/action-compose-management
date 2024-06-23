@@ -41,6 +41,11 @@ jobs:
       (needs.check_changed_files.outputs.changed_files_removed != '') || 
       (needs.check_changed_files.outputs.changed_files_renamed != '')
     uses: ./.github/workflows/single-task_stop-containers.yml
+    with:
+      matrix_hosts: "${{ needs.check_changed_files.outputs.matrix_hosts }}"
+      changed_files_modified: "${{ needs.check_changed_files.outputs.changed_files_modified }}"
+      changed_files_removed: "${{ needs.check_changed_files.outputs.changed_files_removed }}"
+      changed_files_renamed: "${{ needs.check_changed_files.outputs.changed_files_renamed }}"
     secrets: inherit
 
 
