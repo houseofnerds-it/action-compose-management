@@ -1,0 +1,27 @@
+on:
+  workflow_call:
+  
+  
+jobs:
+  git_sync:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        host: [ "${{ needs.check_changed_files.outputs.matrix_hosts }}" ]
+    steps:
+      - uses: appleboy/ssh-action@v1.0.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          host: ${{ vars[format('REMOTE_HOST_{0}', matrix.host)] }}
+          username: ${{ vars[format('REMOTE_USER_{0}', matrix.host)] }}
+          key: ${{ secrets[format('REMOTE_USER_SSH_PRIVATE_KEY_{0}', matrix.host)] }}
+          timeout: 10s
+          command_timeout: 1m
+          envs: GITHUB_TOKEN
+          script: |
+            cd ${{ vars.REMOTE_DOCKER_REPO_PATH_PARENT }}/${{ vars.REMOTE_DOCKER_REPO_FOLDER_NAME }}
+            git fetch --all
+            git reset --hard
+            git pull origin main
+    
