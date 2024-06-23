@@ -14,7 +14,7 @@ jobs:
     runs-on: self-hosted
     strategy:
       matrix:
-        host: [ "${{ needs.check_changed_files.outputs.matrix_hosts }}" ]
+        host: [ "${{ inputs.matrix_hosts }}" ]
     steps:
       - uses: appleboy/ssh-action@v1.0.3
         env:
