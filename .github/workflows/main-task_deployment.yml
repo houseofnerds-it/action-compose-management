@@ -11,7 +11,7 @@ jobs:
     uses: ./.github/workflows/single-task_detect-changes.yml
     secrets: inherit
   
-  check_compose_files:
+  compose_linter:
     needs: check_changed_files
     if: |
       (needs.check_changed_files.outputs.changed_files_added != '') ||
@@ -25,14 +25,16 @@ jobs:
   handle_gpg:
     needs:
       - check_changed_files
-      - check_compose_files
+      - compose_linter
     uses: ./.github/workflows/single-task_gpg-handler.yml
+    with:
+      matrix_hosts: "${{ needs.check_changed_files.outputs.matrix_hosts }}"
     secrets: inherit
 
   stop_modified_removed_renamed_container:
     needs: 
       - check_changed_files
-      - check_compose_files
+      - compose_linter
       - handle_gpg
     if: |
       (needs.check_changed_files.outputs.changed_files_modified != '') || 
@@ -46,7 +48,7 @@ jobs:
   git_sync:
     needs: 
       - check_changed_files
-      - check_compose_files
+      - compose_linter
       - handle_gpg
       - stop_modified_removed_renamed_container
     if: |
@@ -69,7 +71,7 @@ jobs:
   unlock_secret_files:
     needs: 
       - check_changed_files
-      - check_compose_files
+      - compose_linter
       - handle_gpg
       - stop_modified_removed_renamed_container
       - git_sync
@@ -92,7 +94,7 @@ jobs:
   start_added_modified_renamed_container:
     needs: 
       - check_changed_files
-      - check_compose_files
+      - compose_linter
       - handle_gpg
       - stop_modified_removed_renamed_container
       - git_sync
