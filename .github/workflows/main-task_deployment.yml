@@ -3,7 +3,7 @@ name: "action-compose-management-deployment"
 on:
   workflow_call:
     inputs:
-      actions:
+      action:
         type: "string"
 
 jobs:
