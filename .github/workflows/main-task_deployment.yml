@@ -2,7 +2,9 @@ name: "action-compose-management-deployment"
 
 on:
   workflow_call:
-
+    inputs:
+      actions:
+        type: "string"
 
 jobs:
   check_changed_files:
