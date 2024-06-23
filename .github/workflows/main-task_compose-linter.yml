@@ -1,0 +1,60 @@
+name: "action-compose-management-deployment"
+
+on:
+  workflow_call:
+    inputs:
+      gpg_mail:
+        required: true
+        type: string
+    secrets:
+      gpg_key:
+        required: true
+      gpg_password:
+        required: true
+
+jobs:
+  check_changed_files:
+    uses: ./.github/workflows/single-task_detect-changes.yml
+    secrets: inherit
+  
+  compose_linter:
+    runs-on: ubuntu-latest
+    container: docker:25.0.3-alpine3.19
+    strategy:
+      matrix:
+        list_of_files: [ "${{ needs.check_changed_files.outputs.changed_files_all_csv }}" ]
+    needs: check_changed_files
+    if: |
+      (needs.check_changed_files.outputs.changed_files_added != '') ||
+      (needs.check_changed_files.outputs.changed_files_modified != '') ||
+      (needs.check_changed_files.outputs.changed_files_renamed != '')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Import GPG Key for Secret Files"
+        run: |
+          # check and install gpg key IF it is missing
+          if [[ $(gpg --batch --no-tty -K | grep -i "${{ inputs.gpg_mail }}" | wc -l) == 0 ]]; then
+            echo "${{ secrets.gpg_key }}" | gpg --no-tty --batch --passphrase ${{ secrets.gpg_password }} --pinentry-mode loopback --import
+          else
+            echo "Key is already imported. No change needed."
+          fi
+      
+      - name: "Open Secret Files"
+        run: |
+          cd ${{ vars.REMOTE_DOCKER_REPO_PATH_PARENT }}/${{ vars.REMOTE_DOCKER_REPO_FOLDER_NAME }}
+          git secret reveal -f -v -P -p ${{ secrets[format('GPG_PASSPHRASE_{0}', matrix.host)] }}
+      
+      
+      
+      # - uses: ./.github/workflows/single-task_local-gpg-handler.yml
+      #   with:
+      #     gpg_mail: "${{ vars[format('GPG_MAIL_{0}', matrix.host)] }}"
+      #   secrets:
+      #     gpg_key: ""
+
+      - name: "check compose files"
+        #uses: sjafferali/docker-compose-lint-action@v0.1.2
+        uses: houseofnerds-it/docker-compose-lint-action@main
+        with:
+          compose-file: "${{ matrix.list_of_files }}"

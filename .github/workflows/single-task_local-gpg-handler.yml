@@ -1,0 +1,23 @@
+
+on:
+  workflow_call:
+    inputs:
+      gpg_mail:
+        required: true
+        type: string
+    secrets:
+      gpg_key:
+        required: true
+
+jobs:
+  gpg-handler:
+    runs-on: self-hosted
+    container: docker:25.0.3-alpine3.19
+    steps:
+      - run: |
+          # check and install gpg key IF it is missing
+          if [[ $(gpg --batch --no-tty -K | grep -i "${{ vars[format('GPG_MAIL_{0}', matrix.host)] }}" | wc -l) == 0 ]]; then
+            echo "${{ secrets[format('GPG_PRIVATE_KEY_{0}', matrix.host)] }}" | gpg --no-tty --batch --passphrase ${{ secrets[format('GPG_PASSPHRASE_{0}', matrix.host)] }} --pinentry-mode loopback --import
+          else
+            echo "Key is already imported. No change needed."
+          fi

@@ -26,7 +26,7 @@ jobs:
     needs:
       - check_changed_files
       - compose_linter
-    uses: ./.github/workflows/single-task_gpg-handler.yml
+    uses: ./.github/workflows/single-task_remote-gpg-handler.yml
     with:
       matrix_hosts: "${{ needs.check_changed_files.outputs.matrix_hosts }}"
     secrets: inherit
