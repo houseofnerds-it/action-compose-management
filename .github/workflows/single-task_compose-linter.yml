@@ -1,6 +1,10 @@
 
 on:
   workflow_call:
+    inputs:
+      changed_files_all_csv:
+        required: true
+        type: string
 
 
 jobs:
@@ -8,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        list_of_files: [ "${{ needs.check_changed_files.outputs.changed_files_all_csv }}" ]
+        list_of_files: [ "${{ inputs.changed_files_all_csv }}" ]
     steps:
       - uses: actions/checkout@v4
       - name: "check compose files"

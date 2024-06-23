@@ -18,6 +18,8 @@ jobs:
       (needs.check_changed_files.outputs.changed_files_modified != '') ||
       (needs.check_changed_files.outputs.changed_files_renamed != '')
     uses: ./.github/workflows/single-task_compose-linter.yml
+    with:
+      changed_files_all_csv: "${{ needs.check_changed_files.outputs.changed_files_all_csv }}"
     secrets: inherit
 
   handle_gpg:
