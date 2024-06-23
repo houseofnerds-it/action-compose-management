@@ -69,6 +69,8 @@ jobs:
         (needs.stop_modified_removed_renamed_container.result == 'skipped') || (needs.stop_modified_removed_renamed_container.result == 'success')
       )
     uses: ./.github/workflows/single-task_git-sync.yml
+    with:
+      matrix_hosts: "${{ needs.check_changed_files.outputs.matrix_hosts }}"
     secrets: inherit
     
 
@@ -94,6 +96,8 @@ jobs:
       ) &&
       needs.git_sync.result == 'success'
     uses: ./.github/workflows/single-task_unlock-secret-files.yml
+    with:
+      matrix_hosts: "${{ needs.check_changed_files.outputs.matrix_hosts }}"
     secrets: inherit
 
   start_added_modified_renamed_container:
@@ -119,4 +123,8 @@ jobs:
       needs.git_sync.result == 'success' &&
       needs.unlock_secret_files.result == 'success'
     uses: ./.github/workflows/single-task_start-containers.yml
+    with:
+      matrix_hosts: "${{ needs.check_changed_files.outputs.matrix_hosts }}"
+      changed_files_added: "${{ needs.check_changed_files.outputs.changed_files_added }}"
+      changed_files_modified: "${{ needs.check_changed_files.outputs.changed_files_modified }}"
     secrets: inherit

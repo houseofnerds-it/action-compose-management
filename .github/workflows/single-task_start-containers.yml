@@ -1,16 +1,23 @@
 on:
   workflow_call:
-  
-  
+    inputs:
+      matrix_hosts:
+        required: true
+        type: string
+      changed_files_added:
+        required: true
+        type: string
+      changed_files_modified:
+        required: true
+        type: string
+
 jobs:
   start_added_modified_renamed_container:
     runs-on: self-hosted
     strategy:
       matrix:
-        host: [ "${{ needs.check_changed_files.outputs.matrix_hosts }}" ]
+        host: [ "${{ inputs.matrix_hosts }}" ]
     steps:
-      - run: echo ${{ needs.check_changed_files.outputs.changed_files_added }}
-
       - uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ vars[format('REMOTE_HOST_{0}', matrix.host)] }}
@@ -22,7 +29,7 @@ jobs:
             for host in $(echo "${{ matrix.host }}" | tr ' ' '\n' | tr '_' '-' | tr '[:upper:]' '[:lower:]')
             do
               # handle new containers
-              for container in ${{ needs.check_changed_files.outputs.changed_files_added }}
+              for container in ${{ inputs.changed_files_added }}
               do
                 if [[ "$container" = *"$host"* ]]; then
                   # change into right folder and start container
@@ -36,7 +43,7 @@ jobs:
               done
 
               # handle modified containers
-              for container in ${{ needs.check_changed_files.outputs.changed_files_modified }}
+              for container in ${{ inputs.changed_files_modified }}
               do
                 if [[ "$container" = *"$host"* ]]; then
                   # change into right folder and start container

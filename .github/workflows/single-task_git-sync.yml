@@ -1,6 +1,13 @@
 on:
   workflow_call:
-  
+    inputs:
+      matrix_hosts:
+        required: true
+        type: string
+      git_branch:
+        required: false
+        default: 'main'
+        type: string
   
 jobs:
   git_sync:
@@ -23,5 +30,5 @@ jobs:
             cd ${{ vars.REMOTE_DOCKER_REPO_PATH_PARENT }}/${{ vars.REMOTE_DOCKER_REPO_FOLDER_NAME }}
             git fetch --all
             git reset --hard
-            git pull origin main
+            git pull origin ${{ inputs.git_branch }}
     
