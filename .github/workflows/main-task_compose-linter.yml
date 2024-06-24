@@ -19,7 +19,7 @@ jobs:
   
   compose_linter:
     runs-on: self-hosted
-    container: docker:dind
+    container: alpine
     strategy:
       matrix:
         list_of_files: [ "${{ needs.check_changed_files.outputs.changed_files_all_csv }}" ]
