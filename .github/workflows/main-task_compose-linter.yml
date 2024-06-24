@@ -29,6 +29,11 @@ jobs:
       (needs.check_changed_files.outputs.changed_files_modified != '') ||
       (needs.check_changed_files.outputs.changed_files_renamed != '')
     steps:
+      - name: "Install requirements for checkout action"
+        run: |
+          apk update
+          apk add --no-cache nodejs
+      
       - uses: actions/checkout@v4
 
       - name: "Import GPG Key for Secret Files"
