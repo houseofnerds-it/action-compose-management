@@ -31,8 +31,8 @@ jobs:
     steps:
       - name: "Install requirements for checkout action"
         run: |
-          apk update
-          apk add --no-cache nodejs
+          /sbin/apk update
+          /sbin/apk add --no-cache nodejs
       
       - uses: actions/checkout@v4
 
